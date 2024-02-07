@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.demo</groupId>
+    <artifactId>Java-Example</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.8</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>com.code-intelligence</groupId>
+                <artifactId>cifuzz-maven-extension</artifactId>
+                <version>1.4.0</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>code-intelligence</id>
+            <url>https://gitlab.code-intelligence.com/api/v4/projects/89/packages/maven</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>code-intelligence</id>
+            <url>https://gitlab.code-intelligence.com/api/v4/projects/89/packages/maven</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
