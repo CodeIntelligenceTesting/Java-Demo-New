@@ -8,10 +8,7 @@ This Java Example is an example project to showcase the usage of white-box fuzz 
 It features examples for the usage as security issue detector as well as robustness issue detector.
 
 The project contains multiple examples:
-* [SpringBoot Examples](src/test/java/com/demo/api/):
-Multiple examples ranging from simple to more complex showcasing the testing of APIs.
-* [Library Testing Examples](src/test/java/com/demo/libraries):
-One example showing how to use fuzz testing to cover the holes in unit testing setups.
-* [Property Based Testing Example](src/test/java/com/demo/property_based/PropertyBasedFuzzTest.java):
-One example showcasing how Code Intelligence found the [CVE-2021-23899](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23899)
-in the OWASP json-sanitizer library and how fuzz testing can be used for property based testing.
+* [Robustness Examples](src/test/java/com/demo/Controller/CarCategoryControllerTest.java):
+Multiple examples ranging from simple to more complex showcasing the testing of APIs for errors.
+* [Security Examples](src/test/java/com/demo/Controller/UserControllerTest.java):
+  Multiple example showing how to use fuzz testing to check for security vulnerabilities in webservers.

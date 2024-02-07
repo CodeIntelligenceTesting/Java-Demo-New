@@ -12,7 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.Base64;
 
-@RestController("/security")
+@RestController()
 public class ComplexSecurityExample {
 
     @PostMapping("/add")
