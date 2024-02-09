@@ -49,7 +49,7 @@ public class CarCategoryHandler {
     }
 
     public static String createCategory(CarCategoryDTO categoryDTO){
-        return updateCategory(categoryDTO, db.getNextFreeId());
+        return updateCategory(categoryDTO, db.getNextFreeCategoryId());
     }
 
     public static String updateCategory(CarCategoryDTO categoryDTO, String id) {

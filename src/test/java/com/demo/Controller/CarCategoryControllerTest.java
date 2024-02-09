@@ -2,13 +2,16 @@ package com.demo.Controller;
 
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.demo.dto.CarCategoryDTO;
+import com.demo.dto.UserDTO;
 import com.demo.helper.DatabaseMock;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -72,9 +75,12 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateCategory(String id, String role) throws Exception {
+    public void fuzzTestUpdateOrCreateCategory(String id, String role, CarCategoryDTO categoryDTO) throws Exception {
+        ObjectMapper om = new ObjectMapper();
         mockMvc.perform(put("/category/"+id)
-                        .param("role", role))
+                        .param("role", role)
+                        .content(om.writeValueAsString(categoryDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(
                         Matchers.anyOf(
                                 Matchers.is(HttpStatus.Series.SUCCESSFUL),
@@ -87,9 +93,12 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestCreateCategory(String role) throws Exception {
+    public void fuzzTestCreateCategory(String role, CarCategoryDTO categoryDTO) throws Exception {
+        ObjectMapper om = new ObjectMapper();
         mockMvc.perform(put("/category")
-                        .param("role", role))
+                        .param("role", role)
+                        .content(om.writeValueAsString(categoryDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(
                         Matchers.anyOf(
                                 Matchers.is(HttpStatus.Series.SUCCESSFUL),
