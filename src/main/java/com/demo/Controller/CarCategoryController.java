@@ -70,7 +70,7 @@ public class CarCategoryController {
 
     @PutMapping("/category/{id}")
     public String updateOrCreateCategory(@PathVariable String id, @RequestParam (required = false) String role, @RequestBody CarCategoryDTO dto) {
-        if (UserDTO.Role.fromString(role) == UserDTO.Role.ADMIN) {
+        if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
             return CarCategoryHandler.updateCategory(dto, id);
         } else {
             // Not clean but easiest way to return a 403.
@@ -80,7 +80,7 @@ public class CarCategoryController {
 
     @PostMapping("/category")
     public String createCategory(@RequestParam (required = false) String role, @RequestBody CarCategoryDTO dto) {
-        if (UserDTO.Role.fromString(role) == UserDTO.Role.ADMIN) {
+        if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
             return CarCategoryHandler.createCategory(dto);
         } else {
             // Not clean but easiest way to return a 403.

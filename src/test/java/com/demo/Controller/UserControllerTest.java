@@ -40,9 +40,9 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestGetUser(@NotNull String id, String role) throws Exception {
+    public void fuzzTestGetUser(@NotNull String id, @NotNull String role) throws Exception {
         try {
-            mockMvc.perform(get("/user/"+id)
+            mockMvc.perform(get("/user/{id}", id)
                             .param("role", role))
                     .andExpect(CustomMatchers.isNot5xxServerError());
         } catch (IllegalArgumentException e) {
@@ -57,7 +57,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestGetUsers(String role) throws Exception {
+    public void fuzzTestGetUsers(@NotNull String role) throws Exception {
         try {
             mockMvc.perform(get("/user")
                             .param("role", role))
@@ -73,12 +73,12 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestDeleteUser(@NotNull String id, String role, long requestTime) throws Exception {
+    public void fuzzTestDeleteUser(@NotNull String id, @NotNull String role, long requestTime) throws Exception {
 
         try {
             DatabaseMock.setDeleteRequestTime(requestTime);
             DatabaseMock.getInstance().init();
-            mockMvc.perform(delete("/user/"+id)
+            mockMvc.perform(delete("/user/{id}", id)
                             .param("role", role))
                     .andExpect(CustomMatchers.isNot5xxServerError());
         } catch (IllegalArgumentException e) {
@@ -93,10 +93,10 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateUser(@NotNull String id, String role, UserDTO userDTO) throws Exception {
+    public void fuzzTestUpdateOrCreateUser(@NotNull String id, @NotNull String role, @NotNull UserDTO userDTO) throws Exception {
         try {
         ObjectMapper om = new ObjectMapper();
-            mockMvc.perform(put("/user/"+id)
+            mockMvc.perform(put("/user/{id}", id)
                             .param("role", role)
                             .content(om.writeValueAsString(userDTO))
                             .contentType(MediaType.APPLICATION_JSON))
@@ -112,7 +112,7 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestCreateUser(String role, UserDTO userDTO) throws Exception {
+    public void fuzzTestCreateUser(@NotNull String role, @NotNull UserDTO userDTO) throws Exception {
         try {
             ObjectMapper om = new ObjectMapper();
             mockMvc.perform(put("/user")

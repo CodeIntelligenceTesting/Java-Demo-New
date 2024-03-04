@@ -35,9 +35,9 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestGetCategory(@NotNull String id, String role) throws Exception {
+    public void fuzzTestGetCategory(@NotNull String id, @NotNull String role) throws Exception {
         try {
-            mockMvc.perform(get("/category/"+id)
+            mockMvc.perform(get("/category/{id}", id)
                             .param("role", role))
                     .andExpect(CustomMatchers.isNot5xxServerError());
         } catch (IllegalArgumentException e) {
@@ -51,7 +51,7 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestGetCategories(String role) throws Exception {
+    public void fuzzTestGetCategories(@NotNull String role) throws Exception {
         try {
             mockMvc.perform(get("/category")
                             .param("role", role))
@@ -67,9 +67,7 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestDeleteCategory(@NotNull String id, String role, long requestTime) throws Exception {
-
-        DatabaseMock.setDeleteRequestTime(requestTime);
+    public void fuzzTestDeleteCategory(@NotNull String id, @NotNull String role, long requestTime) throws Exception {
         try {
             DatabaseMock.getInstance().init();
             DatabaseMock.setDeleteRequestTime(requestTime);
@@ -88,10 +86,10 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateCategory(@NotNull String id, String role, CarCategoryDTO categoryDTO) throws Exception {
+    public void fuzzTestUpdateOrCreateCategory(@NotNull String id, @NotNull String role, @NotNull CarCategoryDTO categoryDTO) throws Exception {
         try {
             ObjectMapper om = new ObjectMapper();
-            mockMvc.perform(put("/category/"+id)
+            mockMvc.perform(put("/category/{id}", id)
                             .param("role", role)
                             .content(om.writeValueAsString(categoryDTO))
                             .contentType(MediaType.APPLICATION_JSON))
@@ -107,7 +105,7 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestCreateCategory(String role, CarCategoryDTO categoryDTO) throws Exception {
+    public void fuzzTestCreateCategory(@NotNull String role, @NotNull CarCategoryDTO categoryDTO) throws Exception {
         try {
             ObjectMapper om = new ObjectMapper();
             mockMvc.perform(post("/category")
