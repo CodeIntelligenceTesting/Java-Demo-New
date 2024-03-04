@@ -1,6 +1,5 @@
 package com.demo.helper;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.test.util.AssertionErrors;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;

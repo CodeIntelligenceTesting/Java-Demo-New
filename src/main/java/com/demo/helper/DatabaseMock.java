@@ -70,7 +70,9 @@ public class DatabaseMock {
     }
 
     private static void checkIfInitialised() {
-        throw new DatabaseNotInitialisedException();
+        if (!database.isInitialized()) {
+            throw new DatabaseNotInitialisedException();
+        }
     }
 
     public Collection<CarCategoryDTO> getAllCategories() {

@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public Collection<UserDTO> getUsers(@RequestParam String role) {
+    public Collection<UserDTO> getUsers(@RequestParam (required = false) String role) {
         if (role.equals("ADMIN")) {
             triggerLDAPInjection(role);
             return UserHandler.returnUsers();
@@ -48,16 +48,18 @@ public class UserController {
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable String id, @RequestParam(defaultValue = "DEFAULT_USER") String role) {
         UserDTO user = UserHandler.returnSpecificUser(id);
-        if (Base64.getDecoder().decode(role).toString().equals("Admin")) {
-            triggerRCE(id);
-            return user;
-        }else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        try {
+            if (new String(Base64.getDecoder().decode(role)).equals("Admin")) {
+                triggerRCE(id);
+                return user;
+            }
+        } catch (Exception ignored) {}
+
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping("/user/{id}")
-    public boolean deleteUser(@PathVariable String id, @RequestParam String role) {
+    public boolean deleteUser(@PathVariable String id, @RequestParam (required = false) String role) {
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
             return UserHandler.deleteUser(id);
         } else {
@@ -67,21 +69,21 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}")
-    public String updateOrCreateUser(@PathVariable String id, @RequestParam String role, @RequestBody UserDTO dto) {
-        if (Base64.getDecoder().decode(role).toString().equals("Admin")) {
-            if ((dto.getId() ^ 1110001) == 1000001110) {
-                triggerSQLInjection(id);
-            }
+    public String updateOrCreateUser(@PathVariable String id, @RequestParam (required = false) String role, @RequestBody UserDTO dto) {
+        try {
+            if (new String(Base64.getDecoder().decode(role)).equals("Admin")) {
+                if ((dto.getId() ^ 1110001) == 1000001110) {
+                    triggerSQLInjection(id);
+                }
 
-            return UserHandler.updateUser(dto, id);
-        } else {
-            // Not clean but easiest way to return a 403.
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+                return UserHandler.updateUser(dto, id);
+            }
+        } catch (Exception ignored) {}
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/user")
-    public String createUser(@RequestParam String role, @RequestBody UserDTO dto) {
+    public String createUser(@RequestParam (required = false) String role, @RequestBody UserDTO dto) {
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
             return UserHandler.createUser(dto);
         } else {

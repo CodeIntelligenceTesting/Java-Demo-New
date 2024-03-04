@@ -40,3 +40,5 @@ build/
 **/*Crash*
 **/src/test/resources/**/*Inputs*/**
 **/*.tar.gz
+
+**/*.zip

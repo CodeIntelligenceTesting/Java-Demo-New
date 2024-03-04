@@ -1,12 +1,15 @@
 package com.demo.Controller;
 
 import com.code_intelligence.jazzer.junit.FuzzTest;
+import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.UserDTO;
 import com.demo.helper.CustomMatchers;
 import com.demo.helper.DatabaseMock;
+import com.demo.helper.ExceptionCleaner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
@@ -32,10 +35,14 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestGetCategory(String id, String role) throws Exception {
-        mockMvc.perform(get("/category/"+id)
-                        .param("role", role))
-                .andExpect(CustomMatchers.isNot5xxServerError());
+    public void fuzzTestGetCategory(@NotNull String id, String role) throws Exception {
+        try {
+            mockMvc.perform(get("/category/"+id)
+                            .param("role", role))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
     }
 
     /**
@@ -45,9 +52,13 @@ public class CarCategoryControllerTest {
      */
     @FuzzTest
     public void fuzzTestGetCategories(String role) throws Exception {
-        mockMvc.perform(get("/category")
-                        .param("role", role))
-                .andExpect(CustomMatchers.isNot5xxServerError());
+        try {
+            mockMvc.perform(get("/category")
+                            .param("role", role))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
     }
 
     /**
@@ -56,12 +67,19 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestDeleteCategories(String id, String role, long requestTime) throws Exception {
+    public void fuzzTestDeleteCategory(@NotNull String id, String role, long requestTime) throws Exception {
+
         DatabaseMock.setDeleteRequestTime(requestTime);
-        DatabaseMock.getInstance().init();
-        mockMvc.perform(delete("/category/"+id)
-                        .param("role", role))
-                .andExpect(CustomMatchers.isNot5xxServerError());
+        try {
+            DatabaseMock.getInstance().init();
+            DatabaseMock.setDeleteRequestTime(requestTime);
+
+            mockMvc.perform(delete("/category/{id}", id)
+                            .param("role", role))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
     }
 
     /**
@@ -70,13 +88,17 @@ public class CarCategoryControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateCategory(String id, String role, CarCategoryDTO categoryDTO) throws Exception {
-        ObjectMapper om = new ObjectMapper();
-        mockMvc.perform(put("/category/"+id)
-                        .param("role", role)
-                        .content(om.writeValueAsString(categoryDTO))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(CustomMatchers.isNot5xxServerError());
+    public void fuzzTestUpdateOrCreateCategory(@NotNull String id, String role, CarCategoryDTO categoryDTO) throws Exception {
+        try {
+            ObjectMapper om = new ObjectMapper();
+            mockMvc.perform(put("/category/"+id)
+                            .param("role", role)
+                            .content(om.writeValueAsString(categoryDTO))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
     }
 
     /**
@@ -86,11 +108,15 @@ public class CarCategoryControllerTest {
      */
     @FuzzTest
     public void fuzzTestCreateCategory(String role, CarCategoryDTO categoryDTO) throws Exception {
-        ObjectMapper om = new ObjectMapper();
-        mockMvc.perform(post("/category")
-                        .param("role", role)
-                        .content(om.writeValueAsString(categoryDTO))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(CustomMatchers.isNot5xxServerError());
+        try {
+            ObjectMapper om = new ObjectMapper();
+            mockMvc.perform(post("/category")
+                            .param("role", role)
+                            .content(om.writeValueAsString(categoryDTO))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
     }
 }

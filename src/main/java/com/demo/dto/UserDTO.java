@@ -1,5 +1,6 @@
 package com.demo.dto;
 
+import java.util.Arrays;
 import java.util.Base64;
 
 public class UserDTO {
@@ -18,12 +19,15 @@ public class UserDTO {
         }
 
         public static Role fromBase64String(String encodedEnumString) {
-            String enumString = Base64.getDecoder().decode(encodedEnumString).toString();
-            switch (enumString.toUpperCase()) {
-                case "ADMIN": return ADMIN;
-                case "VIP_USER": return VIP_USER;
-                case "DEFAULT_USER":
-                default:          return DEFAULT_USER;
+            try {
+                String enumString = new String(Base64.getDecoder().decode(encodedEnumString));
+                return switch (enumString.toUpperCase()) {
+                    case "ADMIN" -> ADMIN;
+                    case "VIP_USER" -> VIP_USER;
+                    default -> DEFAULT_USER;
+                };
+            } catch (Exception ignored) {
+                return DEFAULT_USER;
             }
         }
     }

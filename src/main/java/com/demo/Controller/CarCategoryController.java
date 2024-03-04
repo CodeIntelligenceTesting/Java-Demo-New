@@ -17,6 +17,12 @@ public class CarCategoryController {
 
     private DatabaseMock database = DatabaseMock.getInstance();
 
+    /**
+     * DB not initialized when calling specific car categories
+     * @param id
+     * @param role
+     * @return
+     */
     @GetMapping("/category/{id}")
     public CarCategoryDTO getCategory(@PathVariable String id, @RequestParam(defaultValue = "DEFAULT_USER") String role) {
         CarCategoryDTO category = CarCategoryHandler.returnSpecificCategory(id);
@@ -35,8 +41,13 @@ public class CarCategoryController {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
+    /**
+     * DB not initialized when calling specific car categories
+     * @param role
+     * @return
+     */
     @GetMapping("/category")
-    public Collection<CarCategoryDTO> getCategories(@RequestParam String role) {
+    public Collection<CarCategoryDTO> getCategories(@RequestParam (required = false) String role) {
         Collection<CarCategoryDTO> categories = new ArrayList<>();
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.VIP_USER) {
             categories.addAll(CarCategoryHandler.returnVIPCategories());
@@ -46,8 +57,9 @@ public class CarCategoryController {
         return categories;
     }
 
+
     @DeleteMapping("/category/{id}")
-    public boolean deleteCategory(@PathVariable String id, @RequestParam String role) {
+    public boolean deleteCategory(@PathVariable String id, @RequestParam (required = false) String role) {
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
             return CarCategoryHandler.deleteCategory(id);
         } else {
@@ -57,7 +69,7 @@ public class CarCategoryController {
     }
 
     @PutMapping("/category/{id}")
-    public String updateOrCreateCategory(@PathVariable String id, @RequestParam String role, @RequestBody CarCategoryDTO dto) {
+    public String updateOrCreateCategory(@PathVariable String id, @RequestParam (required = false) String role, @RequestBody CarCategoryDTO dto) {
         if (UserDTO.Role.fromString(role) == UserDTO.Role.ADMIN) {
             return CarCategoryHandler.updateCategory(dto, id);
         } else {
@@ -67,7 +79,7 @@ public class CarCategoryController {
     }
 
     @PostMapping("/category")
-    public String createCategory(@RequestParam String role, @RequestBody CarCategoryDTO dto) {
+    public String createCategory(@RequestParam (required = false) String role, @RequestBody CarCategoryDTO dto) {
         if (UserDTO.Role.fromString(role) == UserDTO.Role.ADMIN) {
             return CarCategoryHandler.createCategory(dto);
         } else {
