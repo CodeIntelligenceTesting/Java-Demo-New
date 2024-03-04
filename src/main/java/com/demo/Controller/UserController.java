@@ -14,7 +14,9 @@ import javax.naming.directory.SearchControls;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController()
 public class UserController {
@@ -34,23 +36,24 @@ public class UserController {
 
     @GetMapping("/user")
     public Collection<UserDTO> getUsers(@RequestParam String role) {
-        if (UserDTO.Role.fromString(role) == UserDTO.Role.ADMIN) {
+        if (role.equals("ADMIN")) {
+            triggerLDAPInjection(role);
             return UserHandler.returnUsers();
+        } else {
+            // Not clean but easiest way to return a 403.
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        triggerLDAPInjection(role);
-        // Not clean but easiest way to return a 403.
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable String id, @RequestParam(defaultValue = "DEFAULT_USER") String role) {
         UserDTO user = UserHandler.returnSpecificUser(id);
-        if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
+        if (Base64.getDecoder().decode(role).toString().equals("Admin")) {
             triggerRCE(id);
             return user;
+        }else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        // Not clean but easiest way to return a 403.
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping("/user/{id}")
@@ -65,7 +68,7 @@ public class UserController {
 
     @PutMapping("/user/{id}")
     public String updateOrCreateUser(@PathVariable String id, @RequestParam String role, @RequestBody UserDTO dto) {
-        if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
+        if (Base64.getDecoder().decode(role).toString().equals("Admin")) {
             if ((dto.getId() ^ 1110001) == 1000001110) {
                 triggerSQLInjection(id);
             }

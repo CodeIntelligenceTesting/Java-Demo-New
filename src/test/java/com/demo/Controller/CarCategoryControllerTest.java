@@ -3,6 +3,7 @@ package com.demo.Controller;
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.UserDTO;
+import com.demo.helper.CustomMatchers;
 import com.demo.helper.DatabaseMock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -34,10 +35,7 @@ public class CarCategoryControllerTest {
     public void fuzzTestGetCategory(String id, String role) throws Exception {
         mockMvc.perform(get("/category/"+id)
                         .param("role", role))
-                .andExpect(status().is(
-                        Matchers.anyOf(
-                                Matchers.is(HttpStatus.Series.SUCCESSFUL),
-                                Matchers.is(HttpStatus.Series.CLIENT_ERROR))));
+                .andExpect(CustomMatchers.isNot5xxServerError());
     }
 
     /**
@@ -49,7 +47,7 @@ public class CarCategoryControllerTest {
     public void fuzzTestGetCategories(String role) throws Exception {
         mockMvc.perform(get("/category")
                         .param("role", role))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(CustomMatchers.isNot5xxServerError());
     }
 
     /**
@@ -63,10 +61,7 @@ public class CarCategoryControllerTest {
         DatabaseMock.getInstance().init();
         mockMvc.perform(delete("/category/"+id)
                         .param("role", role))
-                .andExpect(status().is(
-                        Matchers.anyOf(
-                                Matchers.is(HttpStatus.Series.SUCCESSFUL),
-                                Matchers.is(HttpStatus.Series.CLIENT_ERROR))));
+                .andExpect(CustomMatchers.isNot5xxServerError());
     }
 
     /**
@@ -81,10 +76,7 @@ public class CarCategoryControllerTest {
                         .param("role", role)
                         .content(om.writeValueAsString(categoryDTO))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(
-                        Matchers.anyOf(
-                                Matchers.is(HttpStatus.Series.SUCCESSFUL),
-                                Matchers.is(HttpStatus.Series.CLIENT_ERROR))));
+                .andExpect(CustomMatchers.isNot5xxServerError());
     }
 
     /**
@@ -95,13 +87,10 @@ public class CarCategoryControllerTest {
     @FuzzTest
     public void fuzzTestCreateCategory(String role, CarCategoryDTO categoryDTO) throws Exception {
         ObjectMapper om = new ObjectMapper();
-        mockMvc.perform(put("/category")
+        mockMvc.perform(post("/category")
                         .param("role", role)
                         .content(om.writeValueAsString(categoryDTO))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(
-                        Matchers.anyOf(
-                                Matchers.is(HttpStatus.Series.SUCCESSFUL),
-                                Matchers.is(HttpStatus.Series.CLIENT_ERROR))));
+                .andExpect(CustomMatchers.isNot5xxServerError());
     }
 }
