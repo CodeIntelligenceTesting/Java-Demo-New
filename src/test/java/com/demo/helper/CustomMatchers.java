@@ -9,7 +9,7 @@ public class CustomMatchers extends StatusResultMatchers {
         return (result) -> {
             int status = result.getResponse().getStatus();
             AssertionErrors.assertTrue("Expect status not to be 5xx. Status is " + status,
-                    (status >= 200 && status < 300) || (status >= 400 && status < 500));
+                    (status < 500 || status >= 600));
         };
     }
 }
