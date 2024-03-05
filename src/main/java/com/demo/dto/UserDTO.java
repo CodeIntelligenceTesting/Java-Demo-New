@@ -10,25 +10,24 @@ public class UserDTO {
         ADMIN;
 
         public static Role fromString(String enumString) {
-            switch (enumString.toUpperCase()) {
-                case "ADMIN": return ADMIN;
-                case "VIP_USER": return VIP_USER;
-                case "DEFAULT_USER":
-                default:          return DEFAULT_USER;
+            if (enumString.equalsIgnoreCase("ADMIN")) {
+                return ADMIN;
+            } else if (enumString.equalsIgnoreCase("VIP_USER")) {
+                return VIP_USER;
             }
+            return DEFAULT_USER;
         }
 
         public static Role fromBase64String(String encodedEnumString) {
             try {
                 String enumString = new String(Base64.getDecoder().decode(encodedEnumString));
-                return switch (enumString.toUpperCase()) {
-                    case "ADMIN" -> ADMIN;
-                    case "VIP_USER" -> VIP_USER;
-                    default -> DEFAULT_USER;
-                };
-            } catch (Exception ignored) {
-                return DEFAULT_USER;
-            }
+                if (enumString.equalsIgnoreCase("ADMIN")) {
+                    return ADMIN;
+                } else if (enumString.equalsIgnoreCase("VIP_USER")) {
+                    return VIP_USER;
+                }
+            } catch (Exception ignored) {}
+            return DEFAULT_USER;
         }
     }
 

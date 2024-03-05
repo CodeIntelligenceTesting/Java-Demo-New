@@ -2,6 +2,7 @@ package com.demo.Controller;
 
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
+import com.code_intelligence.jazzer.mutation.annotation.WithUtf8Length;
 import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.UserDTO;
 import com.demo.helper.CustomMatchers;
@@ -73,10 +74,10 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestDeleteUser(@NotNull String id, @NotNull String role, long requestTime) throws Exception {
+    public void fuzzTestDeleteUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
+                                   @NotNull String role) throws Exception {
 
         try {
-            DatabaseMock.setDeleteRequestTime(requestTime);
             DatabaseMock.getInstance().init();
             mockMvc.perform(delete("/user/{id}", id)
                             .param("role", role))
@@ -93,7 +94,9 @@ public class UserControllerTest {
      * @throws Exception
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateUser(@NotNull String id, @NotNull String role, @NotNull UserDTO userDTO) throws Exception {
+    public void fuzzTestUpdateOrCreateUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
+                                           @NotNull String role,
+                                           @NotNull UserDTO userDTO) throws Exception {
         try {
         ObjectMapper om = new ObjectMapper();
             mockMvc.perform(put("/user/{id}", id)

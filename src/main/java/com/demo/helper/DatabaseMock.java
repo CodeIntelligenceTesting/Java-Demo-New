@@ -66,7 +66,7 @@ public class DatabaseMock {
     }
 
     public static void setDeleteRequestTime(long deleteRequestTime) {
-        DatabaseMock.deleteRequestTime = deleteRequestTime;
+        DatabaseMock.deleteRequestTime = Math.abs(deleteRequestTime);
     }
 
     private static void checkIfInitialised() {
@@ -86,8 +86,11 @@ public class DatabaseMock {
     public boolean deleteCategory(String id) {
         checkIfInitialised();
         try {
+            System.out.println("Sleeping before removing key");
             TimeUnit.MILLISECONDS.sleep(deleteRequestTime);
-        } catch (Exception ignored){}
+        } catch (Exception ignored){
+            System.out.println("Exception being thrown while sleeping. Exception message was: " + ignored.getMessage());
+        }
 
         return categoryStorage.remove(id) != null;
     }
