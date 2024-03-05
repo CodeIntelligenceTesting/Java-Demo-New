@@ -49,13 +49,7 @@ public class CarCategoryControllerTest {
      */
     @FuzzTest
     public void fuzzTestGetCategory(@NotNull String id, @NotNull String role) throws Exception {
-        try {
-            mockMvc.perform(get("/category/{id}", id)
-                            .param("role", role))
-                    .andExpect(CustomMatchers.isNot5xxServerError());
-        } catch (IllegalArgumentException e) {
-            ExceptionCleaner.cleanException(e);
-        }
+        // TODO deleted for you to fill in
     }
 
     /**
@@ -112,15 +106,6 @@ public class CarCategoryControllerTest {
      */
     @FuzzTest
     public void fuzzTestCreateCategory(@NotNull String role, @NotNull CarCategoryDTO categoryDTO) throws Exception {
-        try {
-            ObjectMapper om = new ObjectMapper();
-            mockMvc.perform(post("/category")
-                            .param("role", role)
-                            .content(om.writeValueAsString(categoryDTO))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(CustomMatchers.isNot5xxServerError());
-        } catch (IllegalArgumentException e) {
-            ExceptionCleaner.cleanException(e);
-        }
+        // TODO deleted for you to fill in
     }
 }
