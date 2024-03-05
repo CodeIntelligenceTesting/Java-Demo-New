@@ -3,30 +3,19 @@ package com.demo.Controller;
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import com.code_intelligence.jazzer.mutation.annotation.WithUtf8Length;
-import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.UserDTO;
 import com.demo.helper.CustomMatchers;
 import com.demo.helper.DatabaseMock;
 import com.demo.helper.ExceptionCleaner;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
@@ -36,9 +25,10 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * {@link UserController#getUser(String, String)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link UserController#getUser(String, String)} endpoint.
+     * @param id parameter filled in by the fuzzer.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestGetUser(@NotNull String id, @NotNull String role) throws Exception {
@@ -53,9 +43,9 @@ public class UserControllerTest {
     }
 
     /**
-     * {@link UserController#getUsers(String)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link UserController#getUsers(String)} endpoint.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestGetUsers(@NotNull String role) throws Exception {
@@ -69,9 +59,10 @@ public class UserControllerTest {
     }
 
     /**
-     * {@link UserController#deleteUser(String, String)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link UserController#deleteUser(String, String)} endpoint.
+     * @param id parameter filled in by the fuzzer.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestDeleteUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
@@ -89,9 +80,10 @@ public class UserControllerTest {
     }
 
     /**
-     * {@link UserController#updateOrCreateUser(String, String, UserDTO)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link UserController#updateOrCreateUser(String, String, UserDTO)} endpoint.
+     * @param id parameter filled in by the fuzzer.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestUpdateOrCreateUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
@@ -110,9 +102,9 @@ public class UserControllerTest {
     }
 
     /**
-     * {@link UserController#createUser(String, UserDTO)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link UserController#createUser(String, UserDTO)}endpoint.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestCreateUser(@NotNull String role, @NotNull UserDTO userDTO) throws Exception {

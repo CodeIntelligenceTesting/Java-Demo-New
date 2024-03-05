@@ -2,7 +2,6 @@ package com.demo.Controller;
 
 import com.demo.dto.UserDTO;
 import com.demo.handler.UserHandler;
-import com.demo.helper.DatabaseMock;
 import com.demo.helper.MockLdapContext;
 import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.http.HttpStatus;
@@ -12,17 +11,21 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Objects;
 
+/**
+ * User Spring Controller that holds the user REST endpoints.
+ * Used as a security example, with some, but not all endpoints having some kind of issues.
+ */
 @RestController()
 public class UserController {
-    private DatabaseMock database = DatabaseMock.getInstance();
-    private Connection conn;
+    private final Connection conn;
 
+    /**
+     * Default Constructor initialises an example db that is used to display SQLInjection findings later.
+     */
     public UserController() throws SQLException {
         JdbcDataSource ds = new JdbcDataSource();
         ds.setURL("jdbc:h2:mem:database.db");
@@ -34,6 +37,11 @@ public class UserController {
         conn.createStatement().execute("INSERT INTO users (username, name, password) VALUES ('john', ' John', 'hello123')");
     }
 
+    /**
+     * GET endpoint with a ldap injection security issue, that should return all user objects as collection.
+     * @param role requesting user role definition
+     * @return collection of user objects
+     */
     @GetMapping("/user")
     public Collection<UserDTO> getUsers(@RequestParam (required = false) String role) {
         if (role.equals("ADMIN")) {
@@ -45,11 +53,18 @@ public class UserController {
         }
     }
 
+    /**
+     * GET endpoint with a ldap injection security issue, that should return one specific user object.
+     * @param id category id
+     * @param role requesting user role definition
+     * @return the requested user object
+     */
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable String id, @RequestParam(defaultValue = "DEFAULT_USER") String role) {
         UserDTO user = UserHandler.returnSpecificUser(id);
         try {
             if (new String(Base64.getDecoder().decode(role)).equals("Admin")) {
+                // got here if the role value was "QURNSU4="
                 triggerRCE(id);
                 return user;
             }
@@ -58,9 +73,16 @@ public class UserController {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
+    /**
+     * Secure DELETE endpoint without issues.
+     * @param id category id
+     * @param role requesting user role definition
+     * @return if operation was successful
+     */
     @DeleteMapping("/user/{id}")
     public boolean deleteUser(@PathVariable String id, @RequestParam (required = false) String role) {
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
+            // got here if the role value was "QURNSU4="
             return UserHandler.deleteUser(id);
         } else {
             // Not clean but easiest way to return a 403.
@@ -68,10 +90,18 @@ public class UserController {
         }
     }
 
+    /**
+     * PUT endpoint with SQLInjection vulnerability. Used to update user information.
+     * @param id category id
+     * @param role requesting user role definition
+     * @param dto new user data
+     * @return ID of changed user
+     */
     @PutMapping("/user/{id}")
     public String updateOrCreateUser(@PathVariable String id, @RequestParam (required = false) String role, @RequestBody UserDTO dto) {
         try {
             if (new String(Base64.getDecoder().decode(role)).equals("Admin")) {
+                // got here if the role value was "QURNSU4="
                 if ((dto.getId() ^ 1110001) == 1000001110) {
                     triggerSQLInjection(id);
                 }
@@ -82,9 +112,16 @@ public class UserController {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
+    /**
+     * Secure POST endpoint. Creates new users.
+     * @param role requesting user role definition
+     * @param dto new user data
+     * @return ID of changed user
+     */
     @PostMapping("/user")
     public String createUser(@RequestParam (required = false) String role, @RequestBody UserDTO dto) {
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
+            // got here if the role value was "QURNSU4="
             return UserHandler.createUser(dto);
         } else {
             // Not clean but easiest way to return a 403.
@@ -92,23 +129,38 @@ public class UserController {
         }
     }
 
-    private void triggerRCE(String id) {
+    /**
+     * Helper function with RCE vulnerability
+     * @param className class name that gets dynamically loaded
+     */
+    private void triggerRCE(String className) {
         try {
-            Class.forName(id).getConstructor().newInstance();
+            // loading of not sanitized class name
+            Class.forName(className).getConstructor().newInstance();
         } catch (Exception ignored) {}
     }
 
-    private void triggerSQLInjection(String id) {
-        String query = String.format("SELECT * FROM users WHERE username='%s'", id);
+    /**
+     * Helper function with SQLInjection vulnerability
+     * @param username username that's not sanitized
+     */
+    private void triggerSQLInjection(String username) {
+        // usage of not sanitized input
+        String query = String.format("SELECT * FROM users WHERE username='%s'", username);
         try {
-            ResultSet rs = conn.createStatement().executeQuery(query);
+            conn.createStatement().executeQuery(query);
         } catch (Exception ignored) {}
 
     }
 
-    private void triggerLDAPInjection(String id) {
+    /**
+     * Helper function with LDAPInjection vulnerability
+     * @param ou Organizational Unit value that is not sanitized
+     */
+    private void triggerLDAPInjection(String ou) {
         final DirContext ctx = new MockLdapContext();
-        String base = "ou=" + id + ",dc=example,dc=com";
+        // usage of not sanitized input
+        String base = "ou=" + ou + ",dc=example,dc=com";
         try {
             ctx.search(base, "(&(uid=foo)(cn=bar))", new SearchControls());
         } catch (Exception ignored){}

@@ -1,26 +1,23 @@
 package com.demo.handler;
 
-import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.UserDTO;
 import com.demo.helper.DatabaseMock;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Handler class that provides functionality for the controller class.
+ */
 public class UserHandler {
 
     private static final DatabaseMock db = DatabaseMock.getInstance();
 
     private static void dbInitCheck(){
-        if (!db.isInitialized()) {
+        if (db.isInitialized()) {
             db.init();
         }
     }
 
-    /**
-     * {@link com.demo.Controller.UserController#getUsers(String)}
-     * @return
-     */
     public static Collection<UserDTO> returnUsers(){
         dbInitCheck();
         return db.getAllUsers();
@@ -37,6 +34,7 @@ public class UserHandler {
     }
 
     public static String createUser(UserDTO userDTO){
+        dbInitCheck();
         return updateUser(userDTO, db.getNextFreeCategoryId());
     }
 

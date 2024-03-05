@@ -1,5 +1,8 @@
 package com.demo.dto;
 
+/**
+ * Typical and uninteresting DTO object
+ */
 public class CarCategoryDTO {
 
     public enum TrunkSize{

@@ -1,14 +1,23 @@
 package com.demo.dto;
 
-import java.util.Arrays;
 import java.util.Base64;
 
+/**
+ * DTO object with only secondary level of interest.
+ * Only {@link Role#fromString(String)} and {@link Role#fromBase64String(String)} are interesting for their use
+ * as condition guards for the vulnerabilities and issues.
+ */
 public class UserDTO {
     public enum Role {
         DEFAULT_USER,
         VIP_USER,
         ADMIN;
 
+        /**
+         * Function that maps input string to role object
+         * @param enumString input to map to role object
+         * @return role object
+         */
         public static Role fromString(String enumString) {
             if (enumString.equalsIgnoreCase("ADMIN")) {
                 return ADMIN;
@@ -18,12 +27,19 @@ public class UserDTO {
             return DEFAULT_USER;
         }
 
+        /**
+         * Function that maps base64 encoded input string to role object
+         * @param encodedEnumString encoded input to map to role object
+         * @return role object
+         */
         public static Role fromBase64String(String encodedEnumString) {
             try {
                 String enumString = new String(Base64.getDecoder().decode(encodedEnumString));
                 if (enumString.equalsIgnoreCase("ADMIN")) {
+                    // got here if the role value was "QURNSU4="
                     return ADMIN;
                 } else if (enumString.equalsIgnoreCase("VIP_USER")) {
+                    // got here if the role value was "VklQX1VTRVI="
                     return VIP_USER;
                 }
             } catch (Exception ignored) {}

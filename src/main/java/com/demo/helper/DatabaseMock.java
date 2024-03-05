@@ -1,11 +1,16 @@
 package com.demo.helper;
 
+import com.demo.Controller.CarCategoryController;
 import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.UserDTO;
+import com.demo.handler.CarCategoryHandler;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Database Mock class used to simulate DB requests, etc.
+ */
 public class DatabaseMock {
     private static final DatabaseMock database = new DatabaseMock();
     private static long deleteRequestTime = 0;
@@ -16,11 +21,9 @@ public class DatabaseMock {
     public static DatabaseMock getInstance(){
         return database;
     }
-
     public boolean isInitialized(){
-        return categoryStorage != null && userStorage != null;
+        return categoryStorage == null || userStorage == null;
     }
-
     public void init(){
         categoryStorage = new HashMap<>();
         userStorage = new HashMap<>();
@@ -64,17 +67,14 @@ public class DatabaseMock {
     public static long getDeleteRequestTime() {
         return deleteRequestTime;
     }
-
     public static void setDeleteRequestTime(long deleteRequestTime) {
         DatabaseMock.deleteRequestTime = Math.abs(deleteRequestTime);
     }
-
     private static void checkIfInitialised() {
-        if (!database.isInitialized()) {
+        if (database.isInitialized()) {
             throw new DatabaseNotInitialisedException();
         }
     }
-
     public Collection<CarCategoryDTO> getAllCategories() {
         checkIfInitialised();
         return categoryStorage.values();
@@ -83,14 +83,19 @@ public class DatabaseMock {
         checkIfInitialised();
         return categoryStorage.get(id);
     }
+
+    /**
+     * Delete function that can take longer to execute then expected.
+     * Called ultimately by {@link CarCategoryController#deleteCategory(String, String)}
+     * Directly called by {@link CarCategoryHandler#deleteCategory(String)}
+     * @param id category id
+     * @return if object was deleted successful. False if category was not stored.
+     */
     public boolean deleteCategory(String id) {
         checkIfInitialised();
         try {
-            System.out.println("Sleeping before removing key");
             TimeUnit.MILLISECONDS.sleep(deleteRequestTime);
-        } catch (Exception ignored){
-            System.out.println("Exception being thrown while sleeping. Exception message was: " + ignored.getMessage());
-        }
+        } catch (Exception ignored){}
 
         return categoryStorage.remove(id) != null;
     }
@@ -102,8 +107,6 @@ public class DatabaseMock {
         checkIfInitialised();
         categoryStorage.put(key, categoryDTO);
     }
-
-
     public Collection<UserDTO> getAllUsers() {
         checkIfInitialised();
         return userStorage.values();
@@ -124,7 +127,6 @@ public class DatabaseMock {
         checkIfInitialised();
         userStorage.put(key, userDTO);
     }
-
     private int getLargestNumberFromKeySet(Set<String> keys) {
         Collection<Integer> intKeys = new ArrayList<>();
         for (String key : keys) {

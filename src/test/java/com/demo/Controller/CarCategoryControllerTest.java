@@ -4,24 +4,19 @@ import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import com.code_intelligence.jazzer.mutation.annotation.WithUtf8Length;
 import com.demo.dto.CarCategoryDTO;
-import com.demo.dto.UserDTO;
 import com.demo.helper.CustomMatchers;
 import com.demo.helper.DatabaseMock;
 import com.demo.helper.ExceptionCleaner;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
@@ -30,27 +25,10 @@ public class CarCategoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     /**
-     * {@link CarCategoryController#getCategory(String, String)}
-     * @param role
-     * @throws Exception
-     */
-    @FuzzTest
-    public void fuzzTestGetCategory(@NotNull String id, @NotNull String role) throws Exception {
-        try {
-            mockMvc.perform(get("/category/{id}", id)
-                            .param("role", role))
-                    .andExpect(CustomMatchers.isNot5xxServerError());
-        } catch (IllegalArgumentException e) {
-            ExceptionCleaner.cleanException(e);
-        }
-    }
-
-    /**
-     * {@link CarCategoryController#getCategories(String)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link CarCategoryController#getCategories(String)} endpoint.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestGetCategories(@NotNull String role) throws Exception {
@@ -64,9 +42,27 @@ public class CarCategoryControllerTest {
     }
 
     /**
-     * {@link CarCategoryController#deleteCategory(String, String)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link CarCategoryController#getCategory(String, String)} endpoint.
+     * @param id parameter filled in by the fuzzer.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
+     */
+    @FuzzTest
+    public void fuzzTestGetCategory(@NotNull String id, @NotNull String role) throws Exception {
+        try {
+            mockMvc.perform(get("/category/{id}", id)
+                            .param("role", role))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
+    }
+
+    /**
+     * Advanced Fuzz test function that checks the {@link CarCategoryController#deleteCategory(String, String)} endpoint.
+     * @param id parameter filled in by the fuzzer.
+     * @param role parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     @Timeout(5)
@@ -85,29 +81,12 @@ public class CarCategoryControllerTest {
         }
     }
 
-    @Test
-    @Timeout(5)
-    public void unitTestDeleteCategory() throws Exception {
-        @NotNull String id = "1234";
-        @NotNull String role = "QURNSU4=";
-        long requestTime = 1_000_000;
-        try {
-            DatabaseMock.getInstance().init();
-            DatabaseMock.setDeleteRequestTime(requestTime);
-
-            System.out.println("Before calling Endpoint");
-            mockMvc.perform(delete("/category/{id}", id)
-                            .param("role", role))
-                    .andExpect(CustomMatchers.isNot5xxServerError());
-        } catch (IllegalArgumentException e) {
-            ExceptionCleaner.cleanException(e);
-        }
-    }
-
     /**
-     * {@link CarCategoryController#updateOrCreateCategory(String, String, CarCategoryDTO)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link CarCategoryController#updateOrCreateCategory(String, String, CarCategoryDTO)} endpoint.
+     * @param id parameter filled in by the fuzzer.
+     * @param role parameter filled in by the fuzzer.
+     * @param categoryDTO parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestUpdateOrCreateCategory(@NotNull @WithUtf8Length(min=1, max=5) String id,
@@ -126,9 +105,10 @@ public class CarCategoryControllerTest {
     }
 
     /**
-     * {@link CarCategoryController#createCategory(String, CarCategoryDTO)}
-     * @param role
-     * @throws Exception
+     * Fuzz test function that checks the {@link CarCategoryController#createCategory(String, CarCategoryDTO)} endpoint.
+     * @param role parameter filled in by the fuzzer.
+     * @param categoryDTO parameter filled in by the fuzzer.
+     * @throws Exception default exception
      */
     @FuzzTest
     public void fuzzTestCreateCategory(@NotNull String role, @NotNull CarCategoryDTO categoryDTO) throws Exception {
