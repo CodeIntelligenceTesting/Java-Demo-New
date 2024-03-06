@@ -54,3 +54,5 @@ timeout: 60m
 
 ## Style for CI Fuzz.
 #style: plain
+
+docker-image: eclipse-temurin:21
