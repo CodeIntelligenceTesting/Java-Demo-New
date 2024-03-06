@@ -31,7 +31,9 @@ env:
   CHECKOUT_DIR: checkout-dir/
 jobs:
   fuzz_tests:
-    runs-on: eclipse-temurin:21
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:21
     steps:
       - id: checkout
         name: Checkout Repository
