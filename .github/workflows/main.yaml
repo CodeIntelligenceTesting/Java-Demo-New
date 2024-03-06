@@ -32,9 +32,11 @@ env:
 jobs:
   fuzz_tests:
     runs-on: ubuntu-latest
-    container:
-      image: eclipse-temurin:21
     steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
       - id: checkout
         name: Checkout Repository
         uses: actions/checkout@v2
