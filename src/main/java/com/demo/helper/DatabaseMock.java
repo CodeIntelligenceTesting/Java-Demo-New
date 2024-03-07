@@ -132,6 +132,11 @@ public class DatabaseMock {
         for (String key : keys) {
             intKeys.add(Integer.getInteger(key));
         }
-        return intKeys.stream().sorted().toList().get(intKeys.size()) + 1;
+        List<Integer> list = new ArrayList<>();
+        for (Integer intKey : intKeys) {
+            list.add(intKey);
+        }
+        list.sort(null);
+        return list.get(intKeys.size()) + 1;
     }
 }
