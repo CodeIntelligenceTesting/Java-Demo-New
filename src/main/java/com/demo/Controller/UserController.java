@@ -38,14 +38,13 @@ public class UserController {
     }
 
     /**
-     * GET endpoint with a ldap injection security issue, that should return all user objects as collection.
+     * Secure GET endpoint that returns all user objects as collection.
      * @param role requesting user role definition
      * @return collection of user objects
      */
     @GetMapping("/user")
     public Collection<UserDTO> getUsers(@RequestParam (required = false) String role) {
         if (role.equals("ADMIN")) {
-            triggerLDAPInjection(role);
             return UserHandler.returnUsers();
         } else {
             // Not clean but easiest way to return a 403.
@@ -113,7 +112,7 @@ public class UserController {
     }
 
     /**
-     * Secure POST endpoint. Creates new users.
+     * Insecure POST endpoint with LDAP Injection vulnerability. Creates new users.
      * @param role requesting user role definition
      * @param dto new user data
      * @return ID of changed user
@@ -122,6 +121,9 @@ public class UserController {
     public String createUser(@RequestParam (required = false) String role, @RequestBody UserDTO dto) {
         if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
             // got here if the role value was "QURNSU4="
+
+            // using a (any) string from the DTO to trigger the vulnerability
+            triggerLDAPInjection(dto.getEmail());
             return UserHandler.createUser(dto);
         } else {
             // Not clean but easiest way to return a 403.

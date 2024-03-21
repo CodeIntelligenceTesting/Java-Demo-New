@@ -22,11 +22,11 @@ public class CarCategoryController {
      * @return a collection of the DTO objects. Will be sent to the browser as JSON list.
      */
     @GetMapping("/category")
-    public Collection<CarCategoryDTO> getCategories(@RequestParam (required = false) String role) {
+    public Collection<CarCategoryDTO> getCategories(@RequestParam (defaultValue = "DEFAULT") String role) {
         Collection<CarCategoryDTO> categories = new ArrayList<>();
-        if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.VIP_USER) {
+        if (UserDTO.Role.fromString(role) == UserDTO.Role.VIP_USER) {
             // got here if the role value was "VklQX1VTRVI="
-            //CarCategoryHandler.returnVIPCategories() never checks if DB is initialized before trying to access it.
+            // CarCategoryHandler.returnVIPCategories() never checks if DB is initialized before trying to access it.
             categories.addAll(CarCategoryHandler.returnVIPCategories());
         }
         categories.addAll(CarCategoryHandler.returnDefaultCategories());
@@ -48,11 +48,11 @@ public class CarCategoryController {
         if (category.getVisibleTo() == UserDTO.Role.DEFAULT_USER) {
             return category;
         } else if (category.getVisibleTo() == UserDTO.Role.VIP_USER) {
-            if (UserDTO.Role.fromString(role) == UserDTO.Role.VIP_USER) {
+            if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.VIP_USER) {
                 return category;
             }
         } else if (category.getVisibleTo() == UserDTO.Role.ADMIN) {
-            if (UserDTO.Role.fromString(role) == UserDTO.Role.ADMIN) {
+            if (UserDTO.Role.fromBase64String(role) == UserDTO.Role.ADMIN) {
                 return category;
             }
         }
