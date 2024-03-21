@@ -16,8 +16,7 @@ public class CarCategoryController {
 
     /**
      * GET endpoint with a robustness issue, that returns all categories.
-     * It's never checked that the DB is initialized before querying for all categories that are only visible for VIP_USERS
-     * Issue is hidden in {@link CarCategoryHandler#returnVIPCategories()}.
+     * It's never checked if vip categories exist before adding them to the general list
      * @param role querying user role
      * @return a collection of the DTO objects. Will be sent to the browser as JSON list.
      */
@@ -26,7 +25,7 @@ public class CarCategoryController {
         Collection<CarCategoryDTO> categories = new ArrayList<>();
         if (UserDTO.Role.fromString(role) == UserDTO.Role.VIP_USER) {
             // got here if the role value was "VklQX1VTRVI="
-            // CarCategoryHandler.returnVIPCategories() never checks if DB is initialized before trying to access it.
+            // CarCategoryHandler.returnVIPCategories() may return null, but we're not checking for Null
             categories.addAll(CarCategoryHandler.returnVIPCategories());
         }
         categories.addAll(CarCategoryHandler.returnDefaultCategories());

@@ -35,11 +35,11 @@ public class DatabaseMock {
                 "Open Corsa",
                 UserDTO.Role.DEFAULT_USER));
         categoryStorage.put("2", new CarCategoryDTO(
-                "Exclusive Convertibles",
+                "Nice Convertibles",
                 CarCategoryDTO.TrunkSize.ONE_CASE,
                 4,
                 "Porsche Turbo Convertible",
-                UserDTO.Role.VIP_USER));
+                UserDTO.Role.DEFAULT_USER));
 
         userStorage.put("1",
                 new UserDTO(

@@ -27,13 +27,16 @@ public class CarCategoryHandler {
     /**
      * Handler function with robustness issue, that handles querying of all vip categories
      * Called by {@link CarCategoryController#getCategories(String)}.
-     * @return collection of category objects
+     * @return collection of category objects or null if no categories found
      */
     public static Collection<CarCategoryDTO> returnVIPCategories(){
-        // missing DB init step
-        Collection<CarCategoryDTO> vipCategories = new ArrayList<>();
+        dbInitCheck();
+        Collection<CarCategoryDTO> vipCategories = null;
         for (CarCategoryDTO category : db.getAllCategories()) {
             if (category.getVisibleTo() == UserDTO.Role.VIP_USER) {
+                if (vipCategories == null) {
+                    vipCategories = new ArrayList<>();
+                }
                 vipCategories.add(category);
             }
         }

@@ -1,6 +1,7 @@
 package com.demo.Controller;
 
 import com.code_intelligence.jazzer.junit.FuzzTest;
+import com.code_intelligence.jazzer.junit.Lifecycle;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
 import com.code_intelligence.jazzer.mutation.annotation.WithUtf8Length;
 import com.demo.dto.CarCategoryDTO;
@@ -30,7 +31,7 @@ public class CarCategoryControllerTest {
      * <p/>
      * Execute test with <code>cifuzz run com.demo.Controller.CarCategoryControllerTest::fuzzTestGetCategories</code> or
      * <code>cifuzz container run com.demo.Controller.CarCategoryControllerTest::fuzzTestGetCategories</code>.
-     * Finds a robustness issue in form of an uncaught DatabaseNotInitialisedException exception.
+     * Finds a robustness issue in form of an uncaught NullPointerException exception.
      * <p/>
      * @param role parameter filled in by the fuzzer.
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
