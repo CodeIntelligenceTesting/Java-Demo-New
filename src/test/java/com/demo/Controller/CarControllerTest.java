@@ -35,13 +35,16 @@ public class CarControllerTest {
      */
     @FuzzTest
     public void fuzzTestCarEndpoints(@NotNull Stack<Integer> functionOrder, @NotNull Stack<String> ids, @NotNull Stack<CarDTO> dtos) throws Exception {
+        // Check for a minimal size that makes sense to execute the tests
         if (functionOrder.size() < 5 || ids.size() < 5 || dtos.size() < 5) {
             return;
         }
         ObjectMapper om = new ObjectMapper();
 
+        // Call the endpoints in a loop
         while (!functionOrder.isEmpty()) {
             try {
+                // let the fuzzer decide the call order
                 switch (functionOrder.pop()) {
                     case 0 -> {
                         mockMvc.perform(get("/car"))
@@ -70,7 +73,9 @@ public class CarControllerTest {
                 }
             } catch (IllegalArgumentException e) {
                 ExceptionCleaner.cleanException(e);
-            } catch (EmptyStackException ignored){}
+            } catch (EmptyStackException ignored){
+                break;
+            }
         }
     }
 }
