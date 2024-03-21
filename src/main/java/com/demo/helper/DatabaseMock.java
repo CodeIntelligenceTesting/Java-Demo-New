@@ -2,6 +2,7 @@ package com.demo.helper;
 
 import com.demo.Controller.CarCategoryController;
 import com.demo.dto.CarCategoryDTO;
+import com.demo.dto.CarDTO;
 import com.demo.dto.UserDTO;
 import com.demo.handler.CarCategoryHandler;
 
@@ -17,6 +18,8 @@ public class DatabaseMock {
     private DatabaseMock(){}
     private Map<String, CarCategoryDTO> categoryStorage = null;
     private Map<String, UserDTO> userStorage = null;
+    private Map<String, CarDTO> carStorage = null;
+    private int nextCarId = 0;
 
     public static DatabaseMock getInstance(){
         return database;
@@ -27,6 +30,7 @@ public class DatabaseMock {
     public void init(){
         categoryStorage = new HashMap<>();
         userStorage = new HashMap<>();
+        carStorage = new HashMap<>();
 
         categoryStorage.put("1", new CarCategoryDTO(
                 "Small and budget friendly cars",
@@ -133,5 +137,38 @@ public class DatabaseMock {
             intKeys.add(Integer.getInteger(key));
         }
         return intKeys.stream().sorted().toList().get(intKeys.size()) + 1;
+    }
+
+    public String getNextCarId() {
+        return Integer.valueOf(nextCarId++).toString();
+    }
+
+    public CarDTO createOrUpdateCar(CarDTO carDTO, String id) {
+        if (id == null || carDTO == null) {
+            return null;
+        }
+        checkIfInitialised();
+        return carStorage.put(id, carDTO);
+    }
+
+    public CarDTO getCarWithId(String id) {
+        if (id == null) {
+            return null;
+        }
+        checkIfInitialised();
+        return carStorage.get(id);
+    }
+
+    public Collection<CarDTO> getAllCars() {
+        checkIfInitialised();
+        return carStorage.values();
+    }
+
+    public boolean deleteCarWithId(String id) {
+        if (id == null) {
+            return false;
+        }
+        checkIfInitialised();
+        return carStorage.remove(id) != null;
     }
 }
