@@ -8,6 +8,7 @@ import com.demo.helper.CustomMatchers;
 import com.demo.helper.DatabaseMock;
 import com.demo.helper.ExceptionCleaner;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
@@ -39,6 +40,20 @@ public class UserControllerTest {
         try {
             mockMvc.perform(get("/user")
                             .param("role", role))
+                    .andExpect(CustomMatchers.isNot5xxServerError());
+        } catch (IllegalArgumentException e) {
+            ExceptionCleaner.cleanException(e);
+        }
+    }
+    /**
+     * Unit test variant of {@link UserControllerTest#fuzzTestGetUsers(String)}
+     * @throws Exception uncaught exceptions to signal failing test
+     */
+    @Test
+    public void unitTestGetUsers() throws Exception {
+        try {
+            mockMvc.perform(get("/user")
+                            .param("role", "DEFAULT"))
                     .andExpect(CustomMatchers.isNot5xxServerError());
         } catch (IllegalArgumentException e) {
             ExceptionCleaner.cleanException(e);
