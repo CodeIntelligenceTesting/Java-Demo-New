@@ -57,7 +57,7 @@ public class CarHandler {
      */
     public static void createNewCar(CarDTO dto){
         dbInitCheck();
-        String nextId = db.getNextFreeCategoryId();
+        String nextId = db.getNextCarId();
         if (db.getCarWithId(nextId) != null) {
             throw new CarIdGenerationException("Call to get next id resulted in already existing id.");
         } else {

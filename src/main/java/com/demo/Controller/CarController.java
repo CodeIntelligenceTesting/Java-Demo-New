@@ -1,19 +1,13 @@
 package com.demo.Controller;
 
-import com.demo.dto.CarCategoryDTO;
 import com.demo.dto.CarDTO;
-import com.demo.dto.UserDTO;
-import com.demo.handler.CarCategoryHandler;
 import com.demo.handler.CarHandler;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+@RestController()
 public class CarController {
-    // create example where an update call with an id is able to create new instances,
-    // but the create call does not check if there are ids already taken and tries to override them.
-
     /**
      * Secure GET endpoint that returns all cars.
      * @return a collection of the DTO objects. Will be sent to the browser as JSON list.

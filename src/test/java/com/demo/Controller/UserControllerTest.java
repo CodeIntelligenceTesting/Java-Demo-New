@@ -150,7 +150,7 @@ public class UserControllerTest {
     public void fuzzTestCreateUser(@NotNull String role, @NotNull UserDTO userDTO) throws Exception {
         try {
             ObjectMapper om = new ObjectMapper();
-            mockMvc.perform(put("/user")
+            mockMvc.perform(post("/user")
                             .param("role", role)
                             .content(om.writeValueAsString(userDTO))
                             .contentType(MediaType.APPLICATION_JSON))
