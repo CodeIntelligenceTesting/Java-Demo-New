@@ -2,6 +2,7 @@ package com.demo.Controller;
 
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
+import com.code_intelligence.jazzer.mutation.annotation.UrlSegment;
 import com.code_intelligence.jazzer.mutation.annotation.WithUtf8Length;
 import com.demo.dto.UserDTO;
 import com.demo.helper.CustomMatchers;
@@ -72,7 +73,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestGetUser(@NotNull String id, @NotNull String role) throws Exception {
+    public void fuzzTestGetUser(@UrlSegment String id, @NotNull String role) throws Exception {
         try {
             mockMvc.perform(get("/user/{id}", id)
                             .param("role", role))
@@ -95,7 +96,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestDeleteUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
+    public void fuzzTestDeleteUser(@UrlSegment String id,
                                    @NotNull String role) throws Exception {
 
         try {
@@ -121,7 +122,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
+    public void fuzzTestUpdateOrCreateUser(@UrlSegment String id,
                                            @NotNull String role,
                                            @NotNull UserDTO userDTO) throws Exception {
         try {
@@ -150,7 +151,7 @@ public class UserControllerTest {
     public void fuzzTestCreateUser(@NotNull String role, @NotNull UserDTO userDTO) throws Exception {
         try {
             ObjectMapper om = new ObjectMapper();
-            mockMvc.perform(put("/user")
+            mockMvc.perform(post("/user")
                             .param("role", role)
                             .content(om.writeValueAsString(userDTO))
                             .contentType(MediaType.APPLICATION_JSON))
