@@ -40,7 +40,7 @@ public class CarControllerTest {
      */
     @FuzzTest
     public void fuzzTestCarEndpoints(@NotNull @WithSize(min = 5, max = 15) List< @NotNull Integer> functionOrder,
-                                     @UrlSegment @WithSize(min = 5, max = 15) List< @NotNull String> ids,
+                                     @NotNull @WithSize(min = 5, max = 15) List< @UrlSegment String> ids,
                                      @NotNull @WithSize(min = 5, max = 15) List< @NotNull CarDTO> dtos) throws Exception {
         ObjectMapper om = new ObjectMapper();
 
