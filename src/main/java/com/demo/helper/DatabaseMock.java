@@ -132,11 +132,27 @@ public class DatabaseMock {
         userStorage.put(key, userDTO);
     }
     private int getLargestNumberFromKeySet(Set<String> keys) {
-        Collection<Integer> intKeys = new ArrayList<>();
-        for (String key : keys) {
-            intKeys.add(Integer.getInteger(key));
+        if (keys == null || keys.isEmpty()) {
+            return 0;
         }
-        return intKeys.stream().sorted().toList().get(intKeys.size()) + 1;
+        int largestNumber = 0;
+        boolean containedNumberKey = false;
+        for (String key : keys) {
+            if (key != null) {
+                Integer integer = Integer.getInteger(key);
+                if (integer != null && largestNumber < integer) {
+                    largestNumber = integer;
+                    containedNumberKey = true;
+                }
+            }
+        }
+
+        if (containedNumberKey) {
+            return largestNumber + 1;
+        } else {
+            return 0;
+        }
+
     }
 
     public String getNextCarId() {

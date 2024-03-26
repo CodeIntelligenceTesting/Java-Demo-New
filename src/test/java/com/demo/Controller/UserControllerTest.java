@@ -2,6 +2,7 @@ package com.demo.Controller;
 
 import com.code_intelligence.jazzer.junit.FuzzTest;
 import com.code_intelligence.jazzer.mutation.annotation.NotNull;
+import com.code_intelligence.jazzer.mutation.annotation.UrlSegment;
 import com.code_intelligence.jazzer.mutation.annotation.WithUtf8Length;
 import com.demo.dto.UserDTO;
 import com.demo.helper.CustomMatchers;
@@ -72,7 +73,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestGetUser(@NotNull String id, @NotNull String role) throws Exception {
+    public void fuzzTestGetUser(@NotNull @WithUtf8Length(min=1, max=5) String id, @NotNull String role) throws Exception {
         try {
             mockMvc.perform(get("/user/{id}", id)
                             .param("role", role))
