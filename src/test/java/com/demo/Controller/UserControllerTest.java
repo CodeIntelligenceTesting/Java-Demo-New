@@ -73,7 +73,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestGetUser(@UrlSegment String id, @NotNull String role) throws Exception {
+    public void fuzzTestGetUser(@NotNull @WithUtf8Length(min=1, max=5) String id, @NotNull String role) throws Exception {
         try {
             mockMvc.perform(get("/user/{id}", id)
                             .param("role", role))
@@ -96,7 +96,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestDeleteUser(@UrlSegment String id,
+    public void fuzzTestDeleteUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
                                    @NotNull String role) throws Exception {
 
         try {
@@ -122,7 +122,7 @@ public class UserControllerTest {
      * @throws Exception uncaught exceptions for the fuzzer to detect issues.
      */
     @FuzzTest
-    public void fuzzTestUpdateOrCreateUser(@UrlSegment String id,
+    public void fuzzTestUpdateOrCreateUser(@NotNull @WithUtf8Length(min=1, max=5) String id,
                                            @NotNull String role,
                                            @NotNull UserDTO userDTO) throws Exception {
         try {
